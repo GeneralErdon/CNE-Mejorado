@@ -49,7 +49,10 @@ THIRD_PARTY_APPS = [
 
 MY_APPS = [
     "core",
-    
+    "apps.base",
+    "apps.candidatos",
+    "apps.elecciones",
+    "apps.users"
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + MY_APPS
@@ -123,6 +126,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = 'users.User'
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
@@ -159,9 +163,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Configuracion de Apps de terceros
 
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
-    ),
+    # "DEFAULT_AUTHENTICATION_CLASSES": (
+    #     "rest_framework_simplejwt.authentication.JWTAuthentication",
+    # ),
     "DEFAULT_FILTER_BACKENDS": (
         "rest_framework.filters.SearchFilter",
         "rest_framework.filters.OrderingFilter",
@@ -169,6 +173,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_HISTORY_ENFORCE_HISTORY_MODEL_PERMISSIONS = True
+SIMPLE_HISTORY_HISTORY_ID_USE_UUID = True
 
 SWAGGER_SETTINGS = {
     "DOC_EXPANSION": 'none',

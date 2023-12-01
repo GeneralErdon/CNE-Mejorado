@@ -4,6 +4,8 @@ from django.db import models
 from datetime import datetime as dt
 from simple_history.models import HistoricalRecords
 
+from apps.users.models import User
+
 SEX_CHOICES = (
     ("M", "Masculino"),
     ("F", "Femenino"),
@@ -20,6 +22,7 @@ class BaseModel(models.Model):
         db_index=True,
         unique=True,
         default=uuid.uuid4,
+        #editable=False,
     )
     
     status = models.BooleanField(
@@ -29,9 +32,10 @@ class BaseModel(models.Model):
         db_index=True,
     )
     changed_by = models.ForeignKey(
-        'auth.User', on_delete=models.RESTRICT,
+        User, on_delete=models.RESTRICT,
         verbose_name="Modificado por", 
         help_text="Último usuario en alterar el registro",
+        null=True, blank=True
         )
     
     created_date = models.DateTimeField(
@@ -108,6 +112,7 @@ class PersonModel(BaseModel):
         db_index=True,
         choices=SEX_CHOICES,
         default="M",
+        max_length=1,
     )
     
     class Meta:

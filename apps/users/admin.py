@@ -9,7 +9,6 @@ from apps.users.models import User
 
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
-    
-    def has_module_permission(self, request: HttpRequest) -> bool:
-        self.opts.app_label = 'auth'
-        return super().has_module_permission(request)
+    readonly_fields = (
+        "id",
+    )

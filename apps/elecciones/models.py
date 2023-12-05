@@ -1,7 +1,7 @@
 from django.db import models
 
 from apps.base.models import BaseModel
-from apps.candidatos.models import Candidato
+from apps.candidatos.models import Candidato, Cargo
 
 # Create your models here.
 
@@ -31,6 +31,7 @@ class Eleccion(BaseModel):
     
     candidatos = models.ManyToManyField(
         Candidato,
+        through="Elecciones_Candidato",
         help_text="Participantes como candidatos.",
         verbose_name="Candidatos",
     )
@@ -41,6 +42,29 @@ class Eleccion(BaseModel):
     class Meta:
         verbose_name = 'Eleccion'
         verbose_name_plural = 'Elecciones'
+
+
+class Elecciones_Candidato(BaseModel):
+    eleccion = models.ForeignKey(
+        to=Eleccion,
+        verbose_name="Voto en esta Elección",
+        help_text="Este voto está registrado en estas elecciones",
+        on_delete=models.RESTRICT,
+    )
+    candidato = models.ForeignKey(
+        to=Candidato,
+        verbose_name="Candidato votado",
+        help_text="Este voto es para este candidato, si no hay candidato, es voto nulo",
+        on_delete=models.RESTRICT
+    )
+    
+    cargo = models.ForeignKey(
+        to=Cargo,
+        verbose_name="Cargo",
+        help_text="Cargo que desempeñará el candidato en las elecciones",
+        on_delete=models.RESTRICT
+    )
+    
 
 
 TIPOS_VOTOS = (
@@ -58,7 +82,8 @@ class Voto(BaseModel):
         to=Candidato,
         verbose_name="Candidato votado",
         help_text="Este voto es para este candidato, si no hay candidato, es voto nulo",
-        null=True, blank=True
+        null=True, blank=True,
+        on_delete=models.RESTRICT
     )
     
     acciones = models.BigIntegerField(
@@ -68,9 +93,14 @@ class Voto(BaseModel):
     
     tipo = models.CharField(
         max_length=1,
-        choices=()
+        choices=TIPOS_VOTOS,
+        verbose_name="Tipo de voto",
+        help_text="Indica si el voto es Normal o es voto Nulo",
     )
     
     class Meta:
         verbose_name = 'Voto'
         verbose_name_plural = 'Votos'
+    
+    def __str__(self):
+        return f"voto de {self.acciones} acciones"

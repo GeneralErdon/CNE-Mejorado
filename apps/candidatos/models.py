@@ -1,13 +1,13 @@
 from django.db import models
 from datetime import datetime as dt
 
-from apps.base.models import PersonModel
+from apps.base.models import BaseModel, PersonModel
 
 # Create your models here.
 
 def candidato_image_path(instance, filename):
     
-    identify:str = f"{instance.__str__()}-{instance.identification}"
+    identify:str = f"{instance.identification}"
     year = dt.today().year
     return f"Candidato_img/{year}/{identify}/{filename}"
 
@@ -32,3 +32,16 @@ class Candidato(PersonModel):
     class Meta:
         verbose_name = 'Candidato'
         verbose_name_plural = 'Candidatos'
+
+
+class Cargo(BaseModel):
+    description = models.CharField(
+        max_length=252,
+        verbose_name="Cargo",
+        help_text="Cargo por el que se pueden postular los candidatos en unas elecciones",
+    )
+    max_votos = models.IntegerField(
+        verbose_name="Máximo de voto",
+        help_text="El número máximo de votos por cargo en unas elecciones",
+        
+    )

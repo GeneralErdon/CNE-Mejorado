@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block TITLE %} {{eleccion.description}} {% endblock TITLE %}
+
+{% block BODY %}
+
+    {% for candidato in eleccion.candidatos %}
+    <img src={{candidato.photo}} alt={{candidato.name}} class="w-[200px] h-[200px]">
+    <h1>{{candidato.name}}</h1> 
+
+    {% endfor %}
+    
+
+{% endblock BODY %}

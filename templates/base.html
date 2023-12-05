@@ -1,0 +1,14 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block TITLE %}{% endblock TITLE %}</title>
+  <link href={% static 'css/compiled.css' %} rel="stylesheet">
+  {% block IMPORTS %}{% endblock IMPORTS %}
+</head>
+<body class=" bg-slate-300 font-sans">
+  {% block BODY %}{% endblock BODY %}
+</body>
+</html>

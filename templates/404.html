@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block TITLE %}404 Pagina no encontrada{% endblock TITLE %}
+
+{% block BODY %}
+
+  <div class="flex justify-center items-center content-center">
+    <h1>Error 404 página no encontrada</h1>
+    <a href={% url "home" %} >Inicio</a>
+  </div>
+
+{% endblock BODY %}

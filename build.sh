@@ -15,5 +15,5 @@ $ruta/env/bin/python -m pip install -r $ruta/requirements.txt
 $ruta/env/bin/python $ruta/manage.py migrate
 $ruta/env/bin/python $ruta/manage.py collectstatic --no-input
 
-#yarn --cwd $ruta
-#yarn --cwd $ruta build
+yarn --cwd $ruta/static/css
+yarn --cwd $ruta/static/css tailwindcss -i styles.css -o compiled.css

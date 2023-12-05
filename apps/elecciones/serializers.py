@@ -24,10 +24,25 @@ class VotarModelSerializer(BaseReadOnlySerializer):
     class Meta:
         model = Voto
         exclude = ("created_date", "modified_date", "deleted_date", "changed_by")
-
+    
+    def validate(self, attrs:dict) -> dict:
+        
+        
+        
+        return attrs
 
 class VotosSerializer(serializers.Serializer):
     votos = serializers.ListField(
         child=VotarModelSerializer(),
         allow_empty=True,
+        max_length=8, #! Cambiar, porq esto es así por ahora XD
     )
+    
+    def validate_votos(self, votos:list):
+        if len(votos) > 8:
+            raise serializers.ValidationError({"error": "Más de 8 votos"})
+        
+        
+        
+        
+        return votos

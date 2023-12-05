@@ -1,14 +1,15 @@
+import json
 from typing import Any
 from django.shortcuts import render, redirect
 from django.views.generic import View, CreateView
 from rest_framework.viewsets import GenericViewSet
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from rest_framework.response import Response
 from rest_framework import status
 
 from apps.base.utils import EleccionesManager
 from apps.elecciones.models import Eleccion, Voto
-from apps.elecciones.serializers import EleccionReadOnlySerializer, VotarModelSerializer
+from apps.elecciones.serializers import EleccionReadOnlySerializer, VotarModelSerializer, VotosSerializer
 
 # Create your views here.
 
@@ -43,7 +44,7 @@ class HomePage(View):
         # No hay nada planificado XD
         return render(request, '400.html', status=status.HTTP_400_BAD_REQUEST)
 
-class VotarView(CreateView):
+class VotarView(View):
     
     """
     Ok la idea es la siguiente
@@ -70,24 +71,27 @@ class VotarView(CreateView):
     """
     
     model = Voto
-    serializer_class = VotarModelSerializer
+    serializer_class = VotosSerializer
+    
     
     def get_serializer_class(self, instance=None, data=None, *args, **kwargs) -> VotarModelSerializer:
         return self.serializer_class(instance, data, *args, **kwargs)
     
     def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         
-        serializer = self.get_serializer_class(data=request.data)
+        data = json.loads(request.body)
+        serializer = self.get_serializer_class(data=data)
+        
         
         if serializer.is_valid():
             serializer.save()
             
-            return Response({
+            return JsonResponse({
                 "message": "Votos creados con éxito",
             }, status=status.HTTP_200_OK)
         
         
-        return Response({
+        return JsonResponse({
             "message": "Error, datos inválidos",
             **serializer.errors
         }, status=status.HTTP_400_BAD_REQUEST)

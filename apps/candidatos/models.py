@@ -1,3 +1,4 @@
+from collections.abc import Iterable
 from django.db import models
 from datetime import datetime as dt
 
@@ -45,3 +46,17 @@ class Cargo(BaseModel):
         help_text="El número máximo de votos por cargo en unas elecciones",
         
     )
+    
+    class Meta:
+        verbose_name = 'Cargo'
+        verbose_name_plural = 'Cargos'
+    
+    def __str__(self) -> str:
+        return self.description
+    
+    def clean(self) -> None:
+        self.description = self.description.upper()
+        return super().clean()
+    def save(self, *args, **kwargs) -> None:
+        self.full_clean()
+        return super().save(*args, **kwargs)

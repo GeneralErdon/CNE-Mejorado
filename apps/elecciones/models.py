@@ -65,6 +65,12 @@ class Elecciones_Candidato(BaseModel):
         on_delete=models.RESTRICT
     )
     
+    class Meta:
+        verbose_name = 'Candidato Elecciones'
+        verbose_name_plural = 'Candidato Elecciones'
+    
+    def __str__(self) -> str:
+        return f"Candidato: {self.candidato.name} Postulado como {self.cargo.description}, para Elecciones: {self.eleccion.description}"
 
 
 TIPOS_VOTOS = (

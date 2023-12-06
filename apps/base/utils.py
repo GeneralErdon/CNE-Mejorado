@@ -16,19 +16,32 @@ class VotosManager:
         candidatos:QuerySet[Candidato] = elecciones.candidatos.all()
         
         result:TVotosTotalizados = {
-            "nulos_totales":elecciones.voto_set.filter(tipo="N").count(),
+            "nulos_absolutos":elecciones.voto_set.filter(tipo="N").count(),
+            "nulos_totales": sum(elecciones.voto_set.filter(tipo="N").values_list("acciones", flat=True)),
+            "candidatos": {}
         }
         
         for candidato in candidatos:
             eleccion_candidato:Elecciones_Candidato = candidato.elecciones_candidato_set.filter(eleccion__pk=elecciones.pk).first()
             votos_candidato:QuerySet[Voto] = elecciones.voto_set.filter(candidato__pk=candidato.pk)
             
-            result["candidatos"][candidato.identification]["candidato"] = candidato.__str__()
-            result["candidatos"][candidato.identification]["cargo"] = eleccion_candidato.cargo.description
-            result["candidatos"][candidato.identification]["votos"] = { 
-                                            "total_absoluto": votos_candidato.count(),
-                                            "total_acciones": sum(votos_candidato.values_list("acciones", flat=True))
-                                        }
+            if candidato.identification not in result["candidatos"]:
+                result["candidatos"][candidato.identification] = {
+                    "candidato": candidato.__str__(),
+                    "foto": candidato.photo.url,
+                    "cargo": eleccion_candidato.cargo.description,
+                    "votos": {
+                        "total_absoluto": votos_candidato.count(),
+                        "total_acciones": sum(votos_candidato.values_list("acciones", flat=True))
+                    }
+                }
+            
+            # result["candidatos"][candidato.identification]["candidato"] = candidato.__str__()
+            # result["candidatos"][candidato.identification]["cargo"] = eleccion_candidato.cargo.description
+            # result["candidatos"][candidato.identification]["votos"] = { 
+            #                                 "total_absoluto": votos_candidato.count(),
+            #                                 "total_acciones": sum(votos_candidato.values_list("acciones", flat=True))
+            #                             }
         
         
         return result

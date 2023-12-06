@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block TITLE %}Resultado{% endblock TITLE %}
+
+{% block BODY %}
+
+<h1>Resultado de las elecciones: {{elecciones.description}}</h1>
+
+<h2>Conteo absoluto de votos nulos: {{resultados.nulos_absolutos}}</h2>
+<h2>Cantidad total (acciones) de votos nulos: {{resultados.nulos_totales}}</h2>
+
+<table class=" shadow-lg bg-white border-collapse">
+    <tr>
+        <th class=" bg-blue-100 border text-left px-8 py-4">Candidato</th>
+        <th class=" bg-blue-100 border text-left px-8 py-4">Cargo</th>
+        <th class=" bg-blue-100 border text-left px-8 py-4">votos_totales</th>
+        <th class=" bg-blue-100 border text-left px-8 py-4">votos_absolutos</th>
+    </tr>
+    {% for id, obj in resultados.candidatos.items %}
+        <tr class=" hover:bg-gray-50">    
+            <td class="border px-8 py-4">
+                <img src="{{obj.foto}}" alt="{{obj.candidato}}" class="w-[100px] h-[100px]">
+                {{obj.candidato}}
+            </td>
+            <td class="border px-8 py-4">{{obj.cargo}}</td>
+            <td class="border px-8 py-4">{{obj.votos.total_acciones}}</td>
+            <td class="border px-8 py-4">{{obj.votos.total_absoluto}}</td>
+        </tr>
+    {% endfor %}
+</table>
+
+<script>
+    console.log("{{elecciones}}")
+    console.log("{{resultados}}")
+
+</script>
+
+{% endblock BODY %}

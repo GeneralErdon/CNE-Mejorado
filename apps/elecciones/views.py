@@ -1,13 +1,14 @@
 import json
 from typing import Any
+from uuid import UUID
 from django.shortcuts import render, redirect
 from django.views.generic import View, CreateView
 from rest_framework.viewsets import GenericViewSet
-from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.http import Http404, HttpRequest, HttpResponse, JsonResponse
 from rest_framework.response import Response
 from rest_framework import status
 
-from apps.base.utils import EleccionesManager
+from apps.base.utils import EleccionesManager, VotosManager
 from apps.elecciones.models import Eleccion, Voto
 from apps.elecciones.serializers import EleccionReadOnlySerializer, VotarModelSerializer, VotosSerializer
 
@@ -21,28 +22,36 @@ class NotFoundView(View):
 class HomePage(View):
     
     
-    def get(self, request, *args, **kwargs):
+    def get(self, request:HttpRequest, *args, **kwargs):
         e_manager = EleccionesManager()
         context = {
             "eleccion": None
         }
         
-        proximas_elecciones = e_manager.get_proximas_elecciones()
+        if e_manager.is_today_election():
+            # Si hoy es día de elecciones
+            actual_eleccion = e_manager.get_actual_election().first()
+            context['eleccion'] = EleccionReadOnlySerializer(actual_eleccion).data
+            return render(request, 'apps/elecciones/elecciones_actual.html', context=context, status=status.HTTP_200_OK)
         
-        if proximas_elecciones.exists():
-            
-            if e_manager.is_today_election():
-                # Si hoy es día de elecciones
-                actual_eleccion = e_manager.get_actual_election().first()
-                context['eleccion'] = EleccionReadOnlySerializer(actual_eleccion).data
-                return render(request, 'apps/elecciones/elecciones_actual.html', context=context, status=status.HTTP_200_OK)
-            
-            else:
-                # Si no es día de elecciones, pero hay elecciones planificadas, aquí se mostrará el conteo regresivo.
-                return render(request, 'index.html', {}, status=status.HTTP_200_OK)
+    
+        # Si no es día de elecciones, pero hay elecciones planificadas, aquí se mostrará el conteo regresivo.
+        return render(request, 'index.html', {}, status=status.HTTP_200_OK)
         
-        # No hay nada planificado XD
-        return render(request, '400.html', status=status.HTTP_400_BAD_REQUEST)
+
+
+class TotalizarVotosView(View):
+    
+    def get(self, request:HttpRequest, pk:UUID,  *args, **kwargs):
+        contexto = {
+            "elecciones": Eleccion.objects.filter(pk=pk).first(),
+            "resultados": None
+        }
+        if not contexto["elecciones"]:
+            raise Http404()
+        
+        contexto["resultados"] = VotosManager().totalizar_votos(contexto["elecciones"])
+        return render(request, 'apps/elecciones/resultados_elecciones.html', contexto)
 
 class VotarView(View):
     

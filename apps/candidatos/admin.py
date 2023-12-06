@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from apps.candidatos.models import Candidato
+from apps.candidatos.models import Candidato, Cargo
 
 # Register your models here.
 
@@ -19,3 +19,15 @@ class CustomCandidatoAdmin(admin.ModelAdmin):
         "id",
         "changed_by",
     )
+
+
+@admin.register(Cargo)
+class CustomCargoAdmin(admin.ModelAdmin):
+    list_per_page = 30
+    search_fields = [
+        "description",
+    ]
+    readonly_fields = [
+        "id",
+        "changed_by",
+    ]

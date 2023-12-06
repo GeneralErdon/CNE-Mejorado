@@ -19,7 +19,6 @@ environ.read_env(BASE_DIR / ".env")
 
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 DEBUG = environ.bool("DJANGO_DEBUG")
-print(environ.bool("DJANGO_DEBUG"))
 
 ALLOWED_HOSTS = ["*"]
 CORS_ALLOWED_ORIGINS = environ.list("DJANGO_CORS_ALLOWED_ORIGINS")

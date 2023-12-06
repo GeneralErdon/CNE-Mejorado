@@ -55,7 +55,7 @@ class EleccionesManager:
             Queryset[Eleccion]: Elecciones
         """
         today_dt = dt.datetime.now()
-        return self.get_proximas_elecciones().filter(fecha_inicio__lte=today_dt, fecha_final__gte=today_dt)
+        return self.get_queryset().filter(fecha_inicio__lte=today_dt, fecha_final__gte=today_dt)
     
     def is_today_election(self) -> bool:
         """Funcion que debe decirme si el dia de hoy es dia de elecciones.
@@ -64,9 +64,6 @@ class EleccionesManager:
         Returns:
             bool: True si actualmente hay elecciones activas, False si no
         """
-        today_dt = dt.datetime.now()
-        # Me trae todas las elecciones cuya fecha de inicio 
-        elecciones_qs = self.get_proximas_elecciones()
         
         # Si la fecha de inicio es Menor y la fecha final es Mayor al Ahora
         return self.get_actual_election().exists()

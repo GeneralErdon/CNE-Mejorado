@@ -5,58 +5,71 @@
 
 {% block BODY %}
 <header class="text-center flex justify-between m-3">
-					<div class="">
-                        <img src="{% static 'img/logo-cpv-white.svg' %}" alt="LOGO" class="w-[80px] h-[80px]" />
-                    </div>
-					<div class="text-cent"><h1 class="text-white font-black text-4xl">COMISIÓN ELECTORAL</h1>
-						<h4 class="text-white font-extrabold text-xl">Elección de Junta Directiva 2024 - 2026</h4></div>
-					<div> <span class="text-white font-extrabold text-xl">07/12/23 - 10:00pm</span> </div>
-				</header>
-                <section class="grid grid-cols-12 gap-4 m-4">
-					<div class="col-span-5 text-center bg-white p-2 border rounded grid grid-cols-12">
-						<h1 class="col-span-12 text-center font-bold text-xl">PRESIDENTE</h1>
-						<div class="col-span-4 flex flex-col items-center">
-							<img class="h-[150px] w-[150px] text-center" src="https://source.unsplash.com/150x150/?portrait" alt="Avatar" />
-							<h2>José A. Finocchio</h2>
-							<input type="checkbox" id="miCasillaVerificacion" name="miCasillaVerificacion" class="h-5 w-9" />
-						</div>
-						<div class="col-span-4 flex flex-col items-center">
-							<img class="h-[150px] w-[150px]" src="https://source.unsplash.com/150x150/?portrait" alt="Avatar" />
-							<h2>Yenny Halabi</h2>
-							<input type="checkbox" id="miCasillaVerificacion" name="miCasillaVerificacion" class="h-5 w-5" />
-						</div>
-					</div>
-					<div class="col-span-5 col-start-6 text-center bg-white p-2 border rounded grid grid-cols-12">
-						<h1 class="col-span-12 text-center font-bold text-xl">VICEPRESIDENTE</h1>
-						<div class="col-span-4 flex flex-col items-center">
-							<img class="h-[150px] w-[150px] text-center" src="https://source.unsplash.com/150x150/?portrait" alt="Avatar" />
-							<h2>Victor Julio Bellera</h2>
-							<input type="checkbox" id="miCasillaVerificacion" name="miCasillaVerificacion" class="h-5 w-5" />
-						</div>
-						<div class="col-span-4 flex flex-col items-center">
-							<img class="h-[150px] w-[150px]" src="https://source.unsplash.com/150x150/?portrait" alt="Avatar" />
-							<h2>Gilberto Ojedas S.</h2>
-							<input type="checkbox" id="miCasillaVerificacion" name="miCasillaVerificacion" class="h-5 w-5" />
-						</div>
-					</div>
-					<div class="col-span-10 col-start-1 row-start-2 text-center bg-white p-2 border rounded grid grid-cols-12">
-						<h1 class="col-span-12 text-center font-bold text-xl">DIRECTORES</h1>
-							{% for candidato in eleccion.candidatos %}
-							<div key={index} className="col-span-2 flex flex-col items-center gap-3">
-								<img className="h-[200px] w-[200px] text-center" src="https://source.unsplash.com/150x150/?portrait" alt="Avatar" />
-								<h1>{{candidato.name}}</h1> 
-								<input type="checkbox" id="miCasillaVerificacion" name="miCasillaVerificacion" class="h-5 w-5/>
-							</div>
-                            {% endfor %}
-					</div>
-					<div class="col-span-2 row-span-2 col-start-11 row-start-1 text-center bg-white p-2 border rounded grid grid-cols-12">
-						<div class="col-span-12">
-							<h2 class="font-bold">Cantidad de Acciones</h2>
-							<input type="text" class="border-2 border-gray-300 rounded-md p-2 focus:outline-none focus:border-indigo-500 text-3xl h-[50px] w-[170px]" placeholder="Acciones"></input>
-							<button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-								Votar
-							</button>
-						</div>
-				</section>
+	<div class="">
+		<img src="{% static 'img/logo-cpv-white.svg' %}" alt="LOGO" class="w-[80px] h-[80px]" />
+	</div>
+	<div class="text-cent">
+		<h1 class="text-white font-black text-4xl">COMISIÓN ELECTORAL</h1>
+		<h4 class="text-white font-extrabold text-xl"> {{eleccion.description}} </h4>
+	</div>
+	<div> <span class="text-white font-extrabold text-xl">{{eleccion.fecha_inicio}}</span> </div>
+</header>
+<section class="grid grid-cols-12 gap-4 m-4">
+	{% for cargo, candidatos in eleccion.candidatos.items %}
+	<div class="col-span-10 text-center bg-white p-2 border rounded grid grid-cols-12 gap-4">
+		{% comment %} INGRESAR ACÁ LOS CANDIDATOS {% endcomment %}
+
+		<h1 class=" col-span-12 text-center font-bold text-xl">{{cargo}}</h1>
+		{% for candidato in candidatos %}
+		<div class="col-span-6 justify-center flex flex-col items-center">
+			<img class="h-[150px] w-[150px] text-center" src="{{candidato.photo}}" alt="Avatar" />
+			<h2>{{candidato.name}}</h2>
+			<input type="checkbox" id="{{candidato.identification}}" name="miCasillaVerificacion" class="h-5 w-9" />
+		</div>
+
+		{% endfor %}
+	</div>
+	{% endfor %}
+
+	<div class="col-span-2 row-span-2 col-start-11 row-start-1 text-center bg-white p-2 border rounded grid grid-cols-12">
+		<div class="col-span-12">
+			<h2 class="font-bold">Cantidad de Acciones</h2>
+			<input type="text"
+				class="border-2 border-gray-300 rounded-md p-2 focus:outline-none focus:border-indigo-500 text-3xl h-[50px] w-[170px]"
+				placeholder="Acciones"></input>
+			<button id="votarBtn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+				Votar
+			</button>
+		</div>
+</section>
+
+<script>
+	function contextToJSON() {
+		return `{{eleccion|escapejs}}`
+	}
+	
+	document.getElementById("votarBtn").addEventListener("click", (e) => {
+		/*
+			"votos": [
+			{
+				"candidato": null,
+				"eleccion": "80f93a8a-becb-423d-9616-1bf81ffa4451",
+				"acciones": 22,
+				"tipo": "N"
+			}
+			],
+			"elecciones": "80f93a8a-becb-423d-9616-1bf81ffa4451",
+		*/
+		let votos = {};
+		const context = contextToJSON()
+		console.log(context)
+		console.log(JSON.parse(context))
+
+		Object.entries(context.candidatos).forEach( ([cargo, candidatos], i) => {
+			console.log(cargo)
+		})
+	})
+
+</script>
 
 {% endblock BODY %}

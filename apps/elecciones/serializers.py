@@ -9,9 +9,17 @@ from apps.candidatos.serializers import CandidatoReadOnlySerializer
 from apps.elecciones.models import Eleccion, Elecciones_Candidato, Voto
 from apps.elecciones.types import TVotoData, TVotoSerializerData
 
+
+class Elecciones_CandidatoSerializer(BaseReadOnlySerializer):
+    candidato = CandidatoReadOnlySerializer(read_only=True)
+    cargo = serializers.CharField(source="cargo.description", read_only=True)
+    class Meta:
+        model = Elecciones_Candidato
+        fields = ("candidato", "cargo",)
+
 class EleccionReadOnlySerializer(BaseReadOnlySerializer):
-    fecha_inicio = serializers.DateTimeField(format="%d-%m-%Y %H:%M:S", read_only=True)
-    fecha_final = serializers.DateTimeField(format="%d-%m-%Y %H:%M:S", read_only=True)
+    fecha_inicio = serializers.DateTimeField(format="%d/%m/%Y %H:%M:%S", read_only=True)
+    fecha_final = serializers.DateTimeField(format="%d/%m/%Y %H:%M:%S", read_only=True)
     candidatos = serializers.SerializerMethodField("get_candidatos")
     
     class Meta:
@@ -20,9 +28,17 @@ class EleccionReadOnlySerializer(BaseReadOnlySerializer):
     
     def get_candidatos(self, obj:Eleccion):
         
-        return CandidatoReadOnlySerializer(
-            instance=obj.candidatos, many=True
-            ).data
+        result = {}
+        elecciones_candidato_qs:QuerySet[Elecciones_Candidato] = obj.elecciones_candidato_set.all()
+        
+        for e_c in elecciones_candidato_qs:
+            if e_c.cargo.description not in result:
+                result[e_c.cargo.description] = []
+            
+            result[e_c.cargo.description].append(CandidatoReadOnlySerializer(e_c.candidato).data)
+        
+        
+        return result
 
 
 class VotarModelSerializer(BaseReadOnlySerializer):
@@ -60,7 +76,7 @@ class VotosSerializer(serializers.Serializer):
     votos = serializers.ListField(
         child=VotarModelSerializer(),
         allow_empty=True,
-        max_length=8, #! Cambiar, porq esto es así por ahora XD
+        #max_length=8, #! Cambiar, porq esto es así por ahora XD
     )
     elecciones = serializers.PrimaryKeyRelatedField(
         queryset=EleccionesManager().get_actual_election(),

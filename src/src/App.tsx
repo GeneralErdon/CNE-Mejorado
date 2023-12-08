@@ -1,13 +1,18 @@
-import AdbIcon from '@mui/icons-material/Adb'
-import { TextField } from '@mui/material'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import Home from 'src/pages/Home';
+import Page404 from 'src/pages/Error/Page404';
 function App() {
+  
 
   return (
-    <div className="w-full h-[100vh] flex justify-center items-center bg-red-300">
-      <AdbIcon  /> a
-      <TextField className='bg-red-400' ></TextField>
-
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path='/' >
+          <Route index element={<Home />} />
+          <Route path='*' element={<Page404/>} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   )
 }
 
